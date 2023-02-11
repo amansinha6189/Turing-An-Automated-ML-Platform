@@ -60,7 +60,7 @@ function UploadFileScreen() {
                 <Col md = {4}>
                 <Form onSubmit={handleSubmit}>
                   <Form.Group controlId="formFile" className="mb-3">
-                      <Form.Label><h3 className='my-3 py-3'>Upload Data</h3></Form.Label>
+                      <Form.Label><h3 className='my-3 py-3'>Upload Data in CSV Format</h3></Form.Label>
                       <Form.Control type="file" onChange={handleFileUpload}/>
                     </Form.Group>
                     <Button className = 'btn  btn-block' type="submit" style = {{backgroundColor : 'rgb(53,58,63)'}}>Upload Data <i className="fa-solid fa-upload mx-2"></i></Button>
@@ -99,7 +99,7 @@ function UploadFileScreen() {
     {/* } */}
       
     </div>
-  )
+  ) 
 }
 
 export default UploadFileScreen
