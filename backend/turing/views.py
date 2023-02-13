@@ -25,4 +25,4 @@ def uploadData(request):
     elif request.method == 'GET':
         data = Data.objects.all()
         serializers = DataSerializer(data,many=True)
-        return Response(serializers.data)
+        return Response(serializers.data[len(data) - 1])
