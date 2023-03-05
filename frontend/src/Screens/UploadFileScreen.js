@@ -7,6 +7,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Papa from 'papaparse';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import DataPreprocessing from './DataPreprocessing';
 
 const style = {
   position: 'absolute',
@@ -22,6 +25,7 @@ const style = {
 
 function UploadFileScreen() {
   const [file, setFile] = useState(null);  
+  const [data, setData] = useState(null);
   const [uploaded, setUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState("");
@@ -29,7 +33,10 @@ function UploadFileScreen() {
   const [showData, setShowData] = useState([]);
   const [dragAndDrop, setDragAndDrop] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+  const [opr, setOpr] = useState("drop")
 
+
+  const selectedCol = ["Age", "Salary"]
 
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
@@ -43,6 +50,7 @@ function UploadFileScreen() {
     const formData = new FormData();
     formData.append('data', file);
     formData.append('user', user);
+    console.log(formData);
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/uploadData/', formData, {
@@ -58,21 +66,37 @@ function UploadFileScreen() {
       console.log(error);
     }
 
-      const fetchData = async () => {
-        const response = await axios.get('http://127.0.0.1:8000/api/uploadData/');
-        // console.log(response.data.data);
-        let csvData = await axios.get(`http://127.0.0.1:8000${response.data.data}`)
-                                    .then(response => ( response.data));
-        csvData = String(csvData).split('\n');
-        setShowData(csvData.map(row => row.split(',')));
-        // console.log(csvData);
-      };
-      fetchData();
-    
+    const fetchData = async () => {
+      const response = await axios.get('http://127.0.0.1:8000/api/uploadData/');
+      // console.log(response.data.data);
+      let csvData = await axios.get(`http://127.0.0.1:8000${response.data.data}`)
+                                  .then(response => ( response.data));
+      setData(csvData);
+      csvData = String(csvData).split('\n');
+      setShowData(csvData.map(row => row.split(',')));
+    };
+    fetchData();
+  } 
 
+  const handleDataPreprocessing = async event => {
+    event.preventDefault();
+    const formdata = new FormData();
+    formdata.append('file_name', file.name)
+    formdata.append('opr', opr)
+    formdata.append('selected_Col', selectedCol)
+
+    try{
+      const response = await axios.post('http://127.0.0.1:8000/api/dataPreprocessing/', formdata, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }).then(response => {
+        response.data = String(response.data).split('\n')
+        setShowData(response.data.map(row => row.split(',')))
+    })
+    }catch(error){
+      console.log(error);
+    }
   }
 
-  // console.log(showData);
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
@@ -82,6 +106,15 @@ function UploadFileScreen() {
   const handleDragOver = (e) => {
     e.preventDefault();
   };
+
+  const diffToast=()=>{
+    toast.success("File Uploaded Successfully!",{
+      position:"top-center"
+    });
+
+    console.log(selectedCol);
+}
+   
   return (
     <div>
       {/* {loading ? <h2><Loader /></h2>  */}
@@ -154,6 +187,7 @@ function UploadFileScreen() {
                     </Modal>
                     </Row>
                     <Row>
+                      {/* <ToastContainer /> */}
                     <Table striped bordered hover>
                       <tbody>
                         {showData && showData.map((row, index) => (
@@ -165,10 +199,19 @@ function UploadFileScreen() {
                         ))}
                       </tbody>
                     </Table>
+                    <Button className = 'btn' type="submit" onClick = {handleDataPreprocessing} style = {{backgroundColor : 'rgb(53,58,63)'}}>Data Preprocessing<i className="fa-solid fa-upload mx-2"></i></Button>
+                   
+                    <Row>
+                      <DataPreprocessing data = {showData[0]} selectedCol = {selectedCol}/>
+                    </Row>
                     </Row>
                   </div>
               }
+                    
+            
+
     </div>
+
   ) 
 }
 
