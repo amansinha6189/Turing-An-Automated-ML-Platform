@@ -5,6 +5,7 @@ import Header from './Components/Header';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import HomeScreen from './Screens/HomeScreen';
 import UploadFileScreen from './Screens/UploadFileScreen';
+// import VisualisingData from './Screens/VisualisingData';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Routes>
             <Route exact path='/' element={<HomeScreen />} />
             <Route path = '/upload' element = {<UploadFileScreen />} />
+            {/* <Route path = '/visualise' element = {<VisualisingData />} /> */}
           </Routes>
 
         </Container>

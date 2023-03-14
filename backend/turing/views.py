@@ -16,7 +16,13 @@ import json
 #machine learing modules
 import numpy as np
 import pandas as pd
+
 from sklearn.impute import SimpleImputer
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
+# For Encoding
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
 # Create your views here.
 
 exportData = ''
@@ -25,7 +31,9 @@ exportData = ''
 def getRoutes(request):
     routes = [
         '/api/uploadData',
-        '/api/dataPreprocessing',
+        '/api/handlingMissingValues',
+        '/api/handlingOutliers',
+        '/api/handleEncoding',
         '/api/dataAnalysis',
         '/api/dataPrediction',
         '/api/dataVisualization',
@@ -47,7 +55,7 @@ def uploadData(request):
 
 
 @api_view(['POST'])
-def dataPreprocessing(request):
+def handlingMissingValues(request):
     if(request.method == 'POST'):
         file_name = request.data['file_name']
         opr = request.data['opr']
@@ -69,4 +77,81 @@ def dataPreprocessing(request):
         df_copy.loc[:, selected_Col] = imputer.fit_transform(df_copy.loc[:, selected_Col])
         csv_data = df_copy.to_csv(index=False)
         return Response(csv_data)
+
+
+
+@api_view(['POST'])
+def handlingOutliers(request):
+    if(request.method == 'POST'):
+        file_name = request.data['file_name']
+        col = request.data['col']
+        print(col)
+        selected_Method = request.data['selected_Method']
+        file_path = 'static/files/'+str(file_name)
+        data = pd.read_csv(file_path)
+        # part of data that is required for handling outlier
+
+        req_data = data[col]
+
+        # for i in range(1, len(data)):
+        #     data.iloc[i][col] = float(data.iloc[i][col]
+
+        print(req_data)
+        data_copy = data.copy()
+
+        filtered_data = []
+        outliers = []
+        if(selected_Method == 'z-score'):
+            threshold = 3
+            mean = np.mean(req_data)
+            std = np.std(req_data)
+
+            for i in req_data:
+                z_score = (i-mean)/std
+                # Seperate the data points with a z-score above the threshold
+                if(z_score < threshold):
+                    filtered_data.append(i)
+                else:
+                    outliers.append(i)
+            print(outliers)
+            print(filtered_data)
+            # return Response(filtered_data)
+        elif(selected_Method == 'iqr'):
+            q1, q3 = np.percentile(req_data, [25, 75])
+            iqr = q3 - q1
+            lower_bound = q1 - (1.5 * iqr)
+            upper_bound = q3 + (1.5 * iqr)
+            print(type(req_data))
+            # ls = req_data.values
+            # outliers = [x for x in req_data if x < lower_bound or x > upper_bound]
+            # filtered_data = [x for x in req_data if x >= lower_bound and x <= upper_bound]
+
+            for i in range(len(req_data)): 
+                if (req_data[i]<lower_bound or req_data[i]>upper_bound):
+                    outliers.append(req_data[i])
+                    req_data[i] = None
+            # req_data = pd.Series(ls)
+            print(filtered_data)
+
+        for i in range(len(req_data)): 
+            if(req_data[i] in outliers):
+                req_data[i]  = None
+
+        imp = IterativeImputer(max_iter=10, random_state=0)
+        req_data_series = pd.Series(req_data)
+        smp = imp.fit_transform(req_data_series.values.reshape(-1, 1))
+
+        data[col] = smp
+
+        data = data.to_csv(index=False)
+        return Response(data)
+
+
+
+@api_view(['POST'])
+def handleEncoding(request):
+    
+    return Response(request.data)
+
+
         
