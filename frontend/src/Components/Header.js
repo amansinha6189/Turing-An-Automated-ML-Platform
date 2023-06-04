@@ -21,6 +21,12 @@ function Header() {
                     <LinkContainer to = '/visualise'>
                         <Nav.Link>Visualise</Nav.Link>
                     </LinkContainer>
+                    <LinkContainer to = '/modelTraining'>
+                        <Nav.Link>Model Training</Nav.Link>
+                    </LinkContainer>
+                    {/* <LinkContainer to = '/autoEDA'>
+                        <Nav.Link>Auto EDA</Nav.Link>
+                    </LinkContainer> */}
                 </Nav>
                 </Navbar.Collapse>
             </Container>

@@ -5,7 +5,9 @@ import Header from './Components/Header';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import HomeScreen from './Screens/HomeScreen';
 import UploadFileScreen from './Screens/UploadFileScreen';
-// import VisualisingData from './Screens/VisualisingData';
+import VisualisingData from './Screens/VisualisingData';
+import ModelTraining from './Screens/ModelTraining';
+import AutoEDA from './Screens/AutoEDA';
 
 function App() {
   return (
@@ -17,7 +19,9 @@ function App() {
           <Routes>
             <Route exact path='/' element={<HomeScreen />} />
             <Route path = '/upload' element = {<UploadFileScreen />} />
-            {/* <Route path = '/visualise' element = {<VisualisingData />} /> */}
+            <Route path = '/visualise' element = {<VisualisingData />} />
+            <Route path = '/modelTraining' element = {<ModelTraining />} />
+            <Route path = '/autoEDA' element = {<AutoEDA />} />
           </Routes>
 
         </Container>
