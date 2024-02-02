@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Button, Container, Table } from 'react-bootstrap';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import {IconButton, Typography } from '@mui/material';
 import { Input, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { LinkContainer } from 'react-router-bootstrap';
 
 function DecisionTreeRegression() {
     const [desicionTree_max_depth, setDecisionTree_max_depth] = useState(null)
@@ -15,6 +16,7 @@ function DecisionTreeRegression() {
     const [desicionTree_random_state, setDecisionTree_random_state] = useState(null)
     const [gotScore, setGotScore] = useState(false)
     const [score, setScore] = useState()
+    const [downloadLink, setDownloadLink] = useState('');
 
     const DecisionTreeRegressionCall = async event => {
         event.preventDefault();
@@ -42,11 +44,27 @@ function DecisionTreeRegression() {
           setScore(ModelScore.map(row => row.split(',')));
           
           setGotScore(true)
-
-          
         };
         ModelScore()
       }
+    const ModelDownload = async event => {
+      // const response = await axios.post('http://127.0.0.1:8000/api/downloadModel/')
+
+        const fetchDownloadLink = async () => {
+          try {
+            const response = await axios.post('http://127.0.0.1:8000/api/downloadModel/');
+            console.log(response);
+            console.log(response.data);
+            console.log(response.data.download_link);
+            setDownloadLink(response.data.download_link);
+          } catch (error) {
+            console.error('Error:', error);
+          }
+        };
+    
+        fetchDownloadLink();
+    
+    }
   return (
     <div>
       {!gotScore ? 
@@ -100,7 +118,9 @@ function DecisionTreeRegression() {
                 </TableBody>
               </Table>
           </Container> 
-          <Button className = 'btn  btn-block' type="button" style = {{backgroundColor : 'rgb(53,58,63)'}}>Download Model<i className="fa-solid fa-download mx-2 my-2"></i></Button>
+          <a href ={downloadLink} download='model.joblib'>
+          <Button className = 'btn  btn-block' type="button" style = {{backgroundColor : 'rgb(53,58,63)'}}  onClick={ModelDownload}>Download Model<i className="fa-solid fa-download mx-2 my-2"></i></Button>
+          </a>
         </Typography>
       }
     </div>

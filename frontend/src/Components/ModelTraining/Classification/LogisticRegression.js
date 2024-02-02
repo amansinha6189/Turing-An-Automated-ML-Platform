@@ -11,6 +11,8 @@ function LogisticRegression() {
   const [gotScore, setGotScore] = useState(false)
   const [conf_Mat, setconf_Mat] = useState([])
   const [accuracy, setAccuracy] = useState()
+  const [downloadLink, setDownloadLink] = useState('');
+
     const LogisticRegressionCall = async event => {
         event.preventDefault();
         try{
@@ -30,6 +32,24 @@ function LogisticRegression() {
           setGotScore(true)
         };
         ModelScore()
+      }
+      const ModelDownload = async event => {
+        // const response = await axios.post('http://127.0.0.1:8000/api/downloadModel/')
+  
+          const fetchDownloadLink = async () => {
+            try {
+              const response = await axios.post('http://127.0.0.1:8000/api/downloadModel/');
+              console.log(response);
+              console.log(response.data);
+              console.log(response.data.download_link);
+              setDownloadLink(response.data.download_link);
+            } catch (error) {
+              console.error('Error:', error);
+            }
+          };
+      
+          fetchDownloadLink();
+      
       }
   return (
 <div>
@@ -80,6 +100,9 @@ function LogisticRegression() {
                 </TableBody>
               </Table>
           </Container> 
+          <a href ={downloadLink} download='model.joblib'>
+          <Button className = 'btn  btn-block' type="button" style = {{backgroundColor : 'rgb(53,58,63)'}}  onClick={ModelDownload}>Download Model<i className="fa-solid fa-download mx-2 my-2"></i></Button>
+          </a>
         </Typography>
       }
     </div>

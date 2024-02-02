@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import FileResponse
 from django.conf.urls.static import static
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -10,6 +11,7 @@ from .models import Data
 from .serializers import DataSerializer
 import os
 import json
+import joblib
 
 
 #machine learing modules
@@ -94,6 +96,10 @@ def uploadData(request):
         serializers = DataSerializer(data,many=True)
         return Response(serializers.data[len(data) - 1])
 
+
+
+
+
 @api_view(['POST'])
 def getData(request):
     if(request.method == 'POST'):
@@ -116,6 +122,12 @@ def targetValueData(request):
 
         print(target_exists, target_col, target_type)
     return Response("Success")
+
+@api_view(['GET', 'POST'])
+def sendTargetType(request):
+    if(request.method == 'POST'):
+        global target_type
+        return Response(target_type)
 
 @api_view(['GET'])
 def autoEDA(request):
@@ -788,4 +800,16 @@ def ModelScore(request):
             return Response(df)
 
         
+@api_view(['POST', 'GET'])
+def downloadModel(request):
+    if(request.method == 'POST'):
+        global model
+        filepath = 'static/ModelFiles/model.joblib'
+        joblib.dump(model, filepath)
+
+        response = FileResponse(open(filepath, 'rb'))
+        return response
+    else:
+        # Handle file not found error
+        return HttpResponse("File not found.")
         

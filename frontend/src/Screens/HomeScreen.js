@@ -22,7 +22,7 @@ function HomeScreen() {
                         <LinkContainer to='/upload'>
                             <Button className = 'btn  btn-block' type="button" style = {{backgroundColor : 'rgb(53,58,63)'}}>Try Turing <i className="fa-solid fa-upload mx-2"></i></Button>
                         </LinkContainer>    
-                    </Col>A
+                    </Col>
                 </Row>
             </Col>
             <Col md = {6}><Image src = 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8ZGF0YSUyMHNjaWVuY2V8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60' fluid /></Col>

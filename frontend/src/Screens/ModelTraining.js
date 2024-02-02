@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Button, Card, Col, Row } from 'react-bootstrap';
 import RandomForestRegression from '../Components/ModelTraining/Regression/RandomForestRegression';
@@ -24,7 +24,7 @@ import KmeansClusterring from '../Components/ModelTraining/Clusterring/KMeansClu
 
 function ModelTraining() {
 
-  const [targetType, setTargetType] = useState("NonCategorical")
+  const [targetType, setTargetType] = useState("Categorical")
   const [dropdownOpen, setDropdownOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState('');
   
@@ -34,6 +34,15 @@ function ModelTraining() {
       setSelectedOption(option);
       console.log(selectedOption);
     };
+
+    useEffect(() => {
+      const fetchData = async () => {
+          const response = await axios.post("http://127.0.0.1:8000/api/sendTargetType/");
+          console.log(response.data);
+          setTargetType(response.data)
+        };
+  fetchData();
+},[])
    
   return (
     <div>

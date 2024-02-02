@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.getRoutes, name='routes'),
+    path('sendTargetType/', views.sendTargetType, name='sendTargetType'),
     path('uploadData/', views.uploadData, name='uploadData'),
     path('getData/', views.getData, name='getData'),
     path('handleTargetValueData/', views.targetValueData, name='targetValueData'),
@@ -31,7 +32,7 @@ urlpatterns = [
     path('handleDecisionTreeClassification/', views.DecisionTreeClassification, name='DecisionTreeClassification'),
     path('handleKMeansClusterring/', views.KMeansClusterring, name='KMeansClusterring'),
     path('handleModelScore/', views.ModelScore, name='ModelScore'),
-
+    path('downloadModel/', views.downloadModel, name='downloadModel'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

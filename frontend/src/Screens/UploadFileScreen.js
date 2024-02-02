@@ -674,15 +674,6 @@ try{
                           ) : (
                             <p>Drag and drop a file here</p>
                           )}
-                        <p>OR</p>
-                        <Row>
-                          <Col md = {4}></Col>
-                          <Col md = {4}>
-                            <Button type="button" style = {{backgroundColor : 'rgb(53,58,63)'}}>Get a Dummy Data <i className="fa-solid fa-download mx-2"></i></Button>
-                          </Col>
-                          <Col md = {4}
-                          ></Col>
-                        </Row>
                       </Card>
                     </Col>
                     </Row>
